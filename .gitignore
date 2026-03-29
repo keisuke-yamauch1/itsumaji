@@ -31,3 +31,7 @@ lerna-debug.log*
 
 # misc
 .DS_Store
+
+# Rust / Wasm
+rust-wasm/target/
+rust-wasm/pkg/
