@@ -46,14 +46,15 @@ cd rust-wasm && wasm-pack build --target bundler
 
 ---
 
-## ディレクトリ構成 (予定)
+## ディレクトリ構成
 ```
 itsumaji/
 ├── src/
 │   └── index.ts          # Hono エントリポイント
 ├── rust-wasm/            # Rust クレート
 │   ├── src/lib.rs
-│   └── Cargo.toml
+│   ├── Cargo.toml
+│   └── Cargo.lock
 ├── migrations/           # D1 マイグレーション SQL
 │   └── 0001_init.sql
 ├── wrangler.jsonc
