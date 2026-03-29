@@ -15,7 +15,7 @@ description: 変更内容を論理的な単位に分けて git コミットす�
    - DBスキーマ (migrations/)
    - アプリケーションコード (src/)
    - 自動生成ファイル (worker-configuration.d.ts)
-3. 各コミットのメッセージは以下の形式にする:
+3. 各コミットのメッセージは以下の形式にする（内容の要約は**日本語**で書く）:
    ```
    <種別>: <内容の要約>
    ```
@@ -24,6 +24,6 @@ description: 変更内容を論理的な単位に分けて git コミットす�
 5. コミット後は必ず `git push` を実行する
 
 ## コミットの例
-- `chore: add CLAUDE.md and project config`
-- `feat: add D1 schema for episodes`
-- `chore: add CloudflareBindings type to Hono app`
+- `chore: CLAUDE.md とプロジェクト設定を追加`
+- `feat: episodes の D1 スキーマを追加`
+- `chore: Hono アプリに CloudflareBindings 型を追加`
