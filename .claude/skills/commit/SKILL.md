@@ -21,6 +21,7 @@ description: 変更内容を論理的な単位に分けて git コミットす�
    ```
    種別の例: `feat`, `fix`, `chore`, `docs`, `refactor`
 4. `.wrangler/` は `.gitignore` に含まれているか確認する (ローカルDBは含めない)
+5. コミット後は必ず `git push` を実行する
 
 ## コミットの例
 - `chore: add CLAUDE.md and project config`
