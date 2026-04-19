@@ -23,7 +23,8 @@ CREATE TABLE IF NOT EXISTS episode_platforms (
     episode_id  TEXT    NOT NULL REFERENCES episodes(guid),
     platform_id INTEGER NOT NULL REFERENCES platforms(id),
     url         TEXT    NOT NULL,
-    created_at  TEXT    NOT NULL DEFAULT (datetime('now'))
+    created_at  TEXT    NOT NULL DEFAULT (datetime('now')),
+    UNIQUE (episode_id, platform_id)
 );
 
 INSERT INTO platforms (name, icon_url) VALUES
