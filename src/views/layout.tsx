@@ -233,6 +233,32 @@ const styles = `
     font-size: 13px;
   }
 
+  .rss-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 1.25rem;
+    padding: 6px 12px;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-md);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-muted);
+    letter-spacing: 0.05em;
+    transition: border-color 120ms ease, color 120ms ease;
+  }
+  .rss-link:hover {
+    border-color: var(--zatsu);
+    color: var(--zatsu-dark);
+  }
+  .rss-link__icon {
+    width: 14px;
+    height: 14px;
+    color: var(--zatsu);
+    flex-shrink: 0;
+  }
+
   .episode-detail { margin-top: 1.5rem; }
 
   .back-link {
