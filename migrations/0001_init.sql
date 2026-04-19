@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS episode_platforms (
 );
 
 INSERT INTO platforms (name, icon_url) VALUES
+    ('LISTEN',         'https://listen.style/images/LISTEN_logo.svg'),
     ('Spotify',        'https://images.kechiiiiin.com/itsumaji/20260329092716.svg'),
     ('Apple Podcasts', 'https://images.kechiiiiin.com/itsumaji/20260329092433.png'),
-    ('LISTEN',         'https://listen.style/images/LISTEN_logo.svg'),
     ('Amazon Music',   'https://images.kechiiiiin.com/itsumaji/20260329092942.svg');

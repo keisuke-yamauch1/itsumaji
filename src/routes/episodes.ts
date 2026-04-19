@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import {Episode} from "../models/db/episode";
-import {Platform} from "../models/api/platform";
+import {PlatformEpisode} from "../models/api/platform_episode";
 
 const episodes = new Hono<{ Bindings: CloudflareBindings }>()
 
@@ -14,11 +14,6 @@ type EpisodeRow = {
   name: string
   icon_url: string
   url: string
-}
-
-type PlatformEpisode = {
-  episode: Episode
-  platforms: Platform[]
 }
 
 episodes.get('/', async (c) => {
@@ -49,6 +44,7 @@ episodes.get('/:id', async (c) => {
       published_at: firstResult.published_at,
       duration: firstResult.duration,
       thumbnail_url: firstResult.thumbnail_url,
+      url: firstResult.url,
     },
     platforms: [],
   }
