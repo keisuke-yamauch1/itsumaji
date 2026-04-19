@@ -1,6 +1,5 @@
 import {Episode} from "../models/db/episode";
 import {XMLParser} from "fast-xml-parser";
-import {PlatformEpisode} from "../models/api/platform_episode";
 
 type RssItem = {
     guid: { "#text": string, isPermalink: "false" }
@@ -12,7 +11,12 @@ type RssItem = {
     "itunes:image": { href: string }
 }
 
-export function parseRss(xml: string): PlatformEpisode[] {
+export type RssEpisode = {
+    episode: Episode
+    url: string
+}
+
+export function parseRss(xml: string): RssEpisode[] {
     const parser = new XMLParser({
         ignoreAttributes: false,
         attributeNamePrefix: "",
@@ -20,22 +24,17 @@ export function parseRss(xml: string): PlatformEpisode[] {
     })
 
     const parsed = parser.parse(xml)
-    const items: RssItem[] = parsed.rss.channel.item
+    const items: RssItem[] = parsed.rss.channel.item ?? []
 
-    return items.map((item: RssItem): PlatformEpisode => {
-        return {
-            episode: {
-                guid: item.guid["#text"],
-                title: item.title,
-                description: item.description,
-                published_at: item.pubDate,
-                duration: item["itunes:duration"],
-                thumbnail_url: item["itunes:image"].href,
-                url: item.link,
-            },
-            platforms: [
-                { name: "Listen Style", icon_url: "https://listen.style/favicon.ico", url: item.link }
-            ]
-        }
-    })
+    return items.map((item: RssItem): RssEpisode => ({
+        episode: {
+            guid: item.guid["#text"],
+            title: item.title,
+            description: item.description,
+            published_at: item.pubDate,
+            duration: item["itunes:duration"],
+            thumbnail_url: item["itunes:image"].href,
+        },
+        url: item.link,
+    }))
 }
