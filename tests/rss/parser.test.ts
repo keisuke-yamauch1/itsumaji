@@ -26,7 +26,7 @@ describe('parseRss', () => {
           guid: "01kpf8d7sgm2q6byyxf2q2r6ap",
           title: "雑談：最近ハマってること #11",
           description: "説明テキスト",
-          published_at: "Sat, 18 Apr 2026 23:08:46 +0000",
+          published_at: "2026-04-19",
           duration: "00:53:51",
           thumbnail_url: "https://example.com/image.jpg",
         },

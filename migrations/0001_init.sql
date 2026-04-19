@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS episodes (
     guid         TEXT PRIMARY KEY,
     title        TEXT NOT NULL,
     description  TEXT NOT NULL,
-    published_at TEXT NOT NULL,
+    published_at DATE NOT NULL,
     thumbnail_url TEXT NOT NULL,
     duration     TEXT NOT NULL,
     created_at   TEXT NOT NULL DEFAULT (datetime('now'))

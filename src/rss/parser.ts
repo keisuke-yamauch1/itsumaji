@@ -16,6 +16,17 @@ export type RssEpisode = {
     url: string
 }
 
+const jstDateFormatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Tokyo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+})
+
+function toJstDate(rfc822: string): string {
+    return jstDateFormatter.format(new Date(rfc822))
+}
+
 export function parseRss(xml: string): RssEpisode[] {
     const parser = new XMLParser({
         ignoreAttributes: false,
@@ -31,7 +42,7 @@ export function parseRss(xml: string): RssEpisode[] {
             guid: item.guid["#text"],
             title: item.title,
             description: item.description,
-            published_at: item.pubDate,
+            published_at: toJstDate(item.pubDate),
             duration: item["itunes:duration"],
             thumbnail_url: item["itunes:image"].href,
         },
