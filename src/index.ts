@@ -1,12 +1,11 @@
 import { Hono } from 'hono'
 import episodes from './routes/episodes'
+import pages from './routes/pages'
 import {syncRss} from "./rss/sync";
 
 const app = new Hono<{ Bindings: CloudflareBindings}>()
 
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
+app.route('/', pages)
 app.route('/episodes', episodes)
 
 export default {
