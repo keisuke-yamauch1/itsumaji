@@ -1,32 +1,24 @@
 import { Hono } from 'hono'
+import {Episode} from "../models/db/episode";
+import {Platform} from "../models/api/platform";
 
 const episodes = new Hono<{ Bindings: CloudflareBindings }>()
 
-type Episode = {
-  guid: string
-  title: string
-  description: string
-  published_at: string
-  audio_url: string
-}
-type Platform = {
-  name: string
-  icon_url: string
-  url: string
-}
-type EpisodeWithPlatforms = {
-  episode: Episode
-  platforms: Platform[]
-}
 type EpisodeRow = {
   guid: string
   title: string
   description: string
   published_at: string
-  audio_url: string
+  duration: string
+  thumbnail_url: string
   name: string
   icon_url: string
   url: string
+}
+
+type PlatformEpisode = {
+  episode: Episode
+  platforms: Platform[]
 }
 
 episodes.get('/', async (c) => {
@@ -48,22 +40,23 @@ episodes.get('/:id', async (c) => {
     return c.json({error: 'Not Found'}, 404)
   }
   
-  const first_row = result.results[0]
-  const episode_with_platform: EpisodeWithPlatforms = {
+  const firstResult = result.results[0]
+  const platformEpisode: PlatformEpisode = {
     episode: {
-      guid: first_row.guid,
-      title: first_row.title,
-      description: first_row.description,
-      published_at: first_row.published_at,
-      audio_url: first_row.audio_url,
+      guid: firstResult.guid,
+      title: firstResult.title,
+      description: firstResult.description,
+      published_at: firstResult.published_at,
+      duration: firstResult.duration,
+      thumbnail_url: firstResult.thumbnail_url,
     },
-    platforms: []
+    platforms: [],
   }
   for (const row of result.results) {
-    episode_with_platform.platforms.push({ name: row.name, icon_url: row.icon_url, url: row.url })
+    platformEpisode.platforms.push({ name: row.name, icon_url: row.icon_url, url: row.url })
   }
   
-  return c.json(episode_with_platform)
+  return c.json(platformEpisode)
 })
 
 export default episodes
