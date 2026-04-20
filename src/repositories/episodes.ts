@@ -14,8 +14,25 @@ type EpisodeRow = {
 }
 
 export async function listEpisodes(db: D1Database): Promise<Episode[]> {
-    const result = await db.prepare("SELECT * FROM episodes ORDER BY published_at DESC").all<Episode>()
+    const result = await db.prepare("SELECT * FROM episodes ORDER BY published_at DESC, guid DESC").all<Episode>()
     return result.results
+}
+
+export type AdjacentEpisodes = {
+    prev: Episode | null
+    next: Episode | null
+}
+
+export async function findAdjacentEpisodes(db: D1Database, currentGuid: string): Promise<AdjacentEpisodes> {
+    const episodes = await listEpisodes(db)
+    const index = episodes.findIndex((ep) => ep.guid === currentGuid)
+    if (index === -1) {
+        return { prev: null, next: null }
+    }
+    return {
+        next: index > 0 ? episodes[index - 1] : null,
+        prev: index < episodes.length - 1 ? episodes[index + 1] : null,
+    }
 }
 
 export async function findEpisodeWithPlatforms(db: D1Database, episode_id: string): Promise<PlatformEpisode | null> {
