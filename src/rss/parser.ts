@@ -10,6 +10,8 @@ type RssItem = {
     link: string
     "itunes:duration": string
     "itunes:image": { href: string }
+    "itunes:season"?: number
+    "itunes:episode"?: number
 }
 
 export type RssEpisode = {
@@ -50,6 +52,8 @@ export function parseRss(xml: string): RssEpisode[] {
                 duration: item["itunes:duration"],
                 thumbnail_url: item["itunes:image"].href,
                 category_id: isZatsudan ? CATEGORY_IDS.ZATSUDAN : CATEGORY_IDS.TECH,
+                season: item["itunes:season"] ?? null,
+                episode_number: item["itunes:episode"] ?? 0,
             },
             url: item.link,
         }

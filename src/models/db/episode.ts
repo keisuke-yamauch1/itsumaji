@@ -6,4 +6,6 @@ export type Episode = {
     duration: string
     thumbnail_url: string
     category_id: number
+    season: number | null
+    episode_number: number
 }

@@ -9,13 +9,15 @@ type EpisodeRow = {
     duration: string
     thumbnail_url: string
     category_id: number
+    season: number | null
+    episode_number: number
     name: string
     icon_url: string
     url: string
 }
 
 export async function listEpisodes(db: D1Database): Promise<Episode[]> {
-    const result = await db.prepare("SELECT * FROM episodes ORDER BY published_at DESC, guid DESC").all<Episode>()
+    const result = await db.prepare("SELECT * FROM episodes ORDER BY season DESC, episode_number DESC").all<Episode>()
     return result.results
 }
 
@@ -59,6 +61,8 @@ export async function findEpisodeWithPlatforms(db: D1Database, episode_id: strin
             duration: first.duration,
             thumbnail_url: first.thumbnail_url,
             category_id: first.category_id,
+            season: first.season,
+            episode_number: first.episode_number,
         },
         platforms: result.results.map((row) => ({
             name: row.name,
