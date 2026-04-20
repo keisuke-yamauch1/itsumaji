@@ -1,7 +1,7 @@
 import type { FC } from 'hono/jsx'
 import type { Episode } from '../models/db/episode'
 import { Layout } from './layout'
-import { formatDate, formatEpisodeNumber, parseTitle } from '../utils/episode_title'
+import { formatDate, formatEpisodeNumber, getCategoryInfo, parseTitle } from '../utils/episode_title'
 
 const RSS_URL = 'https://rss.listen.style/p/itsumaji-radio/rss'
 
@@ -43,16 +43,17 @@ export const Home: FC<{ episodes: Episode[] }> = ({ episodes }) => (
     ) : (
       <ul class="episodes">
         {episodes.map((ep) => {
-          const parsed = parseTitle(ep.title)
+          const { cleanTitle, number } = parseTitle(ep.title)
+          const { category, categoryLabel } = getCategoryInfo(ep.category_id)
           return (
             <li>
               <a
-                class={`episode episode--${parsed.category}`}
+                class={`episode episode--${category}`}
                 href={`/episodes/${encodeURIComponent(ep.guid)}`}
               >
                 <div class="episode__meta">
-                  <span class={`episode__tag episode__tag--${parsed.category}`}>
-                    {parsed.categoryLabel}
+                  <span class={`episode__tag episode__tag--${category}`}>
+                    {categoryLabel}
                   </span>
                   <time class="episode__date" dateTime={ep.published_at}>
                     {formatDate(ep.published_at)}
@@ -60,9 +61,9 @@ export const Home: FC<{ episodes: Episode[] }> = ({ episodes }) => (
                   <span class="episode__duration">{ep.duration}</span>
                 </div>
                 <p class="episode__title">
-                  {parsed.cleanTitle}
-                  {parsed.number !== null && (
-                    <span class="episode__number">#{parsed.number}</span>
+                  {cleanTitle}
+                  {number !== null && (
+                    <span class="episode__number">#{number}</span>
                   )}
                 </p>
               </a>

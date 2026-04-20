@@ -1,7 +1,7 @@
 import type { FC } from 'hono/jsx'
 import type { Episode } from '../models/db/episode'
 import { Layout } from './layout'
-import { parseTitle } from '../utils/episode_title'
+import { CATEGORY_IDS } from '../constants/categories'
 
 const HOSTS = [
   {
@@ -21,8 +21,8 @@ const HOSTS = [
 ] as const
 
 export const About: FC<{ episodes: Episode[] }> = ({ episodes }) => {
-  const zCount = episodes.filter((e) => parseTitle(e.title).category === 'zatsu').length
-  const gCount = episodes.filter((e) => parseTitle(e.title).category === 'gijutsu').length
+  const zCount = episodes.filter((e) => e.category_id === CATEGORY_IDS.ZATSUDAN).length
+  const gCount = episodes.filter((e) => e.category_id === CATEGORY_IDS.TECH).length
 
   return (
     <Layout

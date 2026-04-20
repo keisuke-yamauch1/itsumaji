@@ -1,14 +1,25 @@
+import { CATEGORY_IDS } from '../constants/categories'
+
 export type EpisodeCategory = 'zatsu' | 'gijutsu'
 
-export type ParsedTitle = {
+export type CategoryInfo = {
   category: EpisodeCategory
   categoryLabel: '雑談' | '技術'
+}
+
+export type ParsedTitle = {
   number: number | null
   cleanTitle: string
 }
 
+export function getCategoryInfo(categoryId: number): CategoryInfo {
+  if (categoryId === CATEGORY_IDS.ZATSUDAN) {
+    return { category: 'zatsu', categoryLabel: '雑談' }
+  }
+  return { category: 'gijutsu', categoryLabel: '技術' }
+}
+
 const ZATSU_PREFIX = '雑談：'
-const ZATSU_TITLES = new Set(['自己紹介'])
 
 export function parseTitle(title: string): ParsedTitle {
   const numMatch = title.match(/\s*#(\d+)\s*$/)
@@ -17,28 +28,11 @@ export function parseTitle(title: string): ParsedTitle {
     ? title.slice(0, numMatch.index ?? title.length).trim()
     : title
 
-  if (stripped.startsWith(ZATSU_PREFIX)) {
-    return {
-      category: 'zatsu',
-      categoryLabel: '雑談',
-      number,
-      cleanTitle: stripped.slice(ZATSU_PREFIX.length).trim(),
-    }
-  }
-  if (ZATSU_TITLES.has(stripped)) {
-    return {
-      category: 'zatsu',
-      categoryLabel: '雑談',
-      number,
-      cleanTitle: stripped,
-    }
-  }
-  return {
-    category: 'gijutsu',
-    categoryLabel: '技術',
-    number,
-    cleanTitle: stripped,
-  }
+  const cleanTitle = stripped.startsWith(ZATSU_PREFIX)
+    ? stripped.slice(ZATSU_PREFIX.length).trim()
+    : stripped
+
+  return { number, cleanTitle }
 }
 
 export function formatDate(iso: string): string {

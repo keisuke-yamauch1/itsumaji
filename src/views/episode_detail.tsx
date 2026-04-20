@@ -4,7 +4,7 @@ import type { PlatformEpisode } from '../models/api/platform_episode'
 import type { Episode } from '../models/db/episode'
 import type { AdjacentEpisodes } from '../repositories/episodes'
 import { Layout } from './layout'
-import { formatDate, parseTitle } from '../utils/episode_title'
+import { formatDate, getCategoryInfo, parseTitle } from '../utils/episode_title'
 
 type Props = {
   data: PlatformEpisode
@@ -82,18 +82,19 @@ const NavItem: FC<{ ep: Episode | null; direction: 'prev' | 'next' }> = ({ ep, d
 export const EpisodeDetail: FC<Props> = ({ data, neighbors }) => {
   const { episode, platforms } = data
   const listen = platforms.find((p) => p.name === 'LISTEN')
-  const parsed = parseTitle(episode.title)
+  const { cleanTitle, number } = parseTitle(episode.title)
+  const { category, categoryLabel } = getCategoryInfo(episode.category_id)
 
   return (
     <Layout
-      title={`${parsed.cleanTitle}${parsed.number !== null ? ` #${parsed.number}` : ''} — いつまじラジオ`}
+      title={`${cleanTitle}${number !== null ? ` #${number}` : ''} — いつまじラジオ`}
       variant="detail"
-      bodyThemeClass={`theme-${parsed.category}`}
+      bodyThemeClass={`theme-${category}`}
     >
       <article>
         <header class="ep-header">
           <div class="ep-header__meta">
-            <span class="ep-tag">{parsed.categoryLabel}</span>
+            <span class="ep-tag">{categoryLabel}</span>
             <time class="ep-header__date" dateTime={episode.published_at}>
               {formatDate(episode.published_at)}
             </time>
@@ -101,8 +102,8 @@ export const EpisodeDetail: FC<Props> = ({ data, neighbors }) => {
             <span class="ep-header__duration">{episode.duration}</span>
           </div>
           <h1 class="ep-header__title">
-            {parsed.cleanTitle}
-            {parsed.number !== null && <span class="ep-header__number">#{parsed.number}</span>}
+            {cleanTitle}
+            {number !== null && <span class="ep-header__number">#{number}</span>}
           </h1>
         </header>
 
