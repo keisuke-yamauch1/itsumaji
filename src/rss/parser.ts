@@ -1,5 +1,6 @@
 import {Episode} from "../models/db/episode";
 import {XMLParser} from "fast-xml-parser";
+import {CATEGORY_IDS} from "../constants/categories";
 
 type RssItem = {
     guid: { "#text": string, isPermalink: "false" }
@@ -37,15 +38,20 @@ export function parseRss(xml: string): RssEpisode[] {
     const parsed = parser.parse(xml)
     const items: RssItem[] = parsed.rss.channel.item ?? []
 
-    return items.map((item: RssItem): RssEpisode => ({
-        episode: {
-            guid: item.guid["#text"],
-            title: item.title,
-            description: item.description,
-            published_at: toJstDate(item.pubDate),
-            duration: item["itunes:duration"],
-            thumbnail_url: item["itunes:image"].href,
-        },
-        url: item.link,
-    }))
+    return items.map((item: RssItem): RssEpisode => {
+        const ZATSUDAN_PREFIX = '雑談：'
+        const isZatsudan = item.title.startsWith(ZATSUDAN_PREFIX)
+        return {
+            episode: {
+                guid: item.guid["#text"],
+                title: isZatsudan ? item.title.slice(ZATSUDAN_PREFIX.length) : item.title,
+                description: item.description,
+                published_at: toJstDate(item.pubDate),
+                duration: item["itunes:duration"],
+                thumbnail_url: item["itunes:image"].href,
+                category_id: isZatsudan ? CATEGORY_IDS.ZATSUDAN : CATEGORY_IDS.TECH,
+            },
+            url: item.link,
+        }
+    })
 }

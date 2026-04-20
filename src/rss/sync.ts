@@ -13,9 +13,9 @@ async function syncRss(env: CloudflareBindings) {
 
     const episodeStatements = rssEpisodes.map((rssEpisode) =>
         env.DB.prepare(`INSERT OR IGNORE INTO episodes
-       (guid, title, description, published_at, duration, thumbnail_url)
-       VALUES (?, ?, ?, ?, ?, ?)`
-        ).bind(rssEpisode.episode.guid, rssEpisode.episode.title, rssEpisode.episode.description, rssEpisode.episode.published_at, rssEpisode.episode.duration, rssEpisode.episode.thumbnail_url)
+       (guid, title, description, published_at, duration, thumbnail_url, category_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`
+        ).bind(rssEpisode.episode.guid, rssEpisode.episode.title, rssEpisode.episode.description, rssEpisode.episode.published_at, rssEpisode.episode.duration, rssEpisode.episode.thumbnail_url, rssEpisode.episode.category_id)
     )
 
     const platformStatements = rssEpisodes.map((rssEpisode) =>

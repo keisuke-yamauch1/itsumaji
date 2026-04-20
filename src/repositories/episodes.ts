@@ -8,6 +8,7 @@ type EpisodeRow = {
     published_at: string
     duration: string
     thumbnail_url: string
+    category_id: number
     name: string
     icon_url: string
     url: string
@@ -57,6 +58,7 @@ export async function findEpisodeWithPlatforms(db: D1Database, episode_id: strin
             published_at: first.published_at,
             duration: first.duration,
             thumbnail_url: first.thumbnail_url,
+            category_id: first.category_id,
         },
         platforms: result.results.map((row) => ({
             name: row.name,

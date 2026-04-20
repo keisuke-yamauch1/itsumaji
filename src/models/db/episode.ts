@@ -5,4 +5,5 @@ export type Episode = {
     published_at: string
     duration: string
     thumbnail_url: string
+    category_id: number
 }
