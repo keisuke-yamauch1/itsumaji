@@ -2,6 +2,7 @@ import { describe, it, expect, beforeAll, beforeEach, afterEach } from 'vitest'
 import { env, fetchMock } from 'cloudflare:test'
 import { syncRss } from '../../src/rss/sync'
 import { PLATFORM_IDS } from '../../src/constants/platforms'
+import { CATEGORY_IDS } from '../../src/constants/categories'
 
 const RSS_URL_ORIGIN = 'https://rss.listen.style'
 const RSS_URL_PATH = '/p/itsumaji-radio/rss'
@@ -11,7 +12,7 @@ const RSS_XML = `<?xml version="1.0" encoding="UTF-8"?>
   <channel>
     <title>いつまじラジオ</title>
     <item>
-      <title><![CDATA[エピソード1]]></title>
+      <title><![CDATA[雑談：近況報告]]></title>
       <description><![CDATA[説明1]]></description>
       <link>https://listen.style/p/itsumaji-radio/ep1</link>
       <guid isPermaLink="false">guid-1</guid>
@@ -20,7 +21,7 @@ const RSS_XML = `<?xml version="1.0" encoding="UTF-8"?>
       <itunes:image href="https://example.com/image1.jpg"/>
     </item>
     <item>
-      <title><![CDATA[エピソード2]]></title>
+      <title><![CDATA[Hono 入門]]></title>
       <description><![CDATA[説明2]]></description>
       <link>https://listen.style/p/itsumaji-radio/ep2</link>
       <guid isPermaLink="false">guid-2</guid>
@@ -69,11 +70,11 @@ describe('syncRss', () => {
     await syncRss(env)
 
     const episodes = await env.DB
-      .prepare('SELECT guid, title FROM episodes ORDER BY guid')
-      .all<{ guid: string; title: string }>()
+      .prepare('SELECT guid, title, category_id FROM episodes ORDER BY guid')
+      .all<{ guid: string; title: string; category_id: number }>()
     expect(episodes.results).toEqual([
-      { guid: 'guid-1', title: 'エピソード1' },
-      { guid: 'guid-2', title: 'エピソード2' },
+      { guid: 'guid-1', title: '近況報告', category_id: CATEGORY_IDS.ZATSUDAN },
+      { guid: 'guid-2', title: 'Hono 入門', category_id: CATEGORY_IDS.TECH },
     ])
 
     const platforms = await env.DB
@@ -106,10 +107,11 @@ describe('syncRss', () => {
     await syncRss(env)
 
     const episode = await env.DB
-      .prepare('SELECT title FROM episodes WHERE guid = ?')
+      .prepare('SELECT title, category_id FROM episodes WHERE guid = ?')
       .bind('guid-1')
-      .first<{ title: string }>()
+      .first<{ title: string; category_id: number }>()
     expect(episode?.title).toBe('手動で書き換えたタイトル')
+    expect(episode?.category_id).toBe(CATEGORY_IDS.ZATSUDAN)
 
     const count = await env.DB
       .prepare('SELECT COUNT(*) as c FROM episodes')

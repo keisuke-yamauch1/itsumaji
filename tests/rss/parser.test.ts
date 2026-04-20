@@ -24,15 +24,71 @@ describe('parseRss', () => {
       {
         episode: {
           guid: "01kpf8d7sgm2q6byyxf2q2r6ap",
-          title: "雑談：最近ハマってること #11",
+          title: "最近ハマってること #11",
           description: "説明テキスト",
           published_at: "2026-04-19",
           duration: "00:53:51",
           thumbnail_url: "https://example.com/image.jpg",
+          category_id: 1,
         },
         url: "https://listen.style/p/itsumaji-radio/tstkdxyx",
       }
     ])
+  })
+
+  it('正常系：「雑談：」で始まらないタイトルは tech カテゴリになる', () => {
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
+  <channel>
+    <title>いつまじラジオ</title>
+    <item>
+      <title><![CDATA[TypeScript の型システムを深掘り #5]]></title>
+      <description><![CDATA[説明テキスト]]></description>
+      <link>https://listen.style/p/itsumaji-radio/tech1</link>
+      <guid isPermaLink="false">tech-guid-1</guid>
+      <pubDate>Sat, 18 Apr 2026 23:08:46 +0000</pubDate>
+      <itunes:duration>00:40:00</itunes:duration>
+      <itunes:image href="https://example.com/tech.jpg"/>
+    </item>
+  </channel>
+</rss>`
+
+    const results = parseRss(xml)
+    expect(results[0].episode.title).toBe('TypeScript の型システムを深掘り #5')
+    expect(results[0].episode.category_id).toBe(2)
+  })
+
+  it('正常系：雑談と技術が混在しても正しく分類される', () => {
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
+  <channel>
+    <title>いつまじラジオ</title>
+    <item>
+      <title><![CDATA[雑談：近況報告]]></title>
+      <description><![CDATA[説明1]]></description>
+      <link>https://listen.style/p/itsumaji-radio/ep1</link>
+      <guid isPermaLink="false">guid-1</guid>
+      <pubDate>Sat, 18 Apr 2026 23:08:46 +0000</pubDate>
+      <itunes:duration>00:10:00</itunes:duration>
+      <itunes:image href="https://example.com/image1.jpg"/>
+    </item>
+    <item>
+      <title><![CDATA[Hono 入門]]></title>
+      <description><![CDATA[説明2]]></description>
+      <link>https://listen.style/p/itsumaji-radio/ep2</link>
+      <guid isPermaLink="false">guid-2</guid>
+      <pubDate>Sat, 11 Apr 2026 23:08:46 +0000</pubDate>
+      <itunes:duration>00:20:00</itunes:duration>
+      <itunes:image href="https://example.com/image2.jpg"/>
+    </item>
+  </channel>
+</rss>`
+
+    const results = parseRss(xml)
+    expect(results[0].episode.title).toBe('近況報告')
+    expect(results[0].episode.category_id).toBe(1)
+    expect(results[1].episode.title).toBe('Hono 入門')
+    expect(results[1].episode.category_id).toBe(2)
   })
 
   it('正常系：複数の item を配列として返す', () => {
