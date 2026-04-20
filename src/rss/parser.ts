@@ -47,7 +47,7 @@ export function parseRss(xml: string): RssEpisode[] {
             episode: {
                 guid: item.guid["#text"],
                 title: isZatsudan ? item.title.slice(ZATSUDAN_PREFIX.length) : item.title,
-                description: item.description,
+                description: item.description.split('<p>---</p>')[0].trim(),
                 published_at: toJstDate(item.pubDate),
                 duration: item["itunes:duration"],
                 thumbnail_url: item["itunes:image"].href,
