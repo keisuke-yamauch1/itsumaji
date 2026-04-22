@@ -17,7 +17,7 @@ type EpisodeRow = {
 }
 
 export async function listEpisodes(db: D1Database): Promise<Episode[]> {
-    const result = await db.prepare("SELECT * FROM episodes ORDER BY season DESC, episode_number DESC").all<Episode>()
+    const result = await db.prepare("SELECT * FROM episodes ORDER BY episode_number DESC").all<Episode>()
     return result.results
 }
 
