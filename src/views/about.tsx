@@ -3,23 +3,6 @@ import type { Episode } from '../models/db/episode'
 import { Layout } from './layout'
 import { CATEGORY_IDS } from '../constants/categories'
 
-const HOSTS = [
-  {
-    id: 'a',
-    initial: 'い',
-    name: 'いつき',
-    role: 'HOST / ENGINEER',
-    bio: '普段はWebエンジニア。雑談パートを担当。サウナと本と自作キーボード沼の住人。',
-  },
-  {
-    id: 'b',
-    initial: 'ま',
-    name: 'まじめ',
-    role: 'HOST / ENGINEER',
-    bio: '普段はインフラエンジニア。技術パートを担当。読書家で年間80冊目標。勉強会運営歴6年。',
-  },
-] as const
-
 export const About: FC<{ episodes: Episode[] }> = ({ episodes }) => {
   const zCount = episodes.filter((e) => e.category_id === CATEGORY_IDS.ZATSUDAN).length
   const gCount = episodes.filter((e) => e.category_id === CATEGORY_IDS.TECH).length
@@ -31,10 +14,14 @@ export const About: FC<{ episodes: Episode[] }> = ({ episodes }) => {
     >
       <div class="about-hero">
         <h2 class="about-heading">
-          いつもの<span class="accent--zatsu">雑談</span>、まじめな<span class="accent--gijutsu">技術</span>。
+          いつもの<span class="accent--zatsu">雑談</span>、まじめな<span class="accent--gijutsu">技術</span>
         </h2>
         <p class="about-lead">
-          エンジニア二人が、その週にあったどうでもいい話と、ちょっとまじめな技術の話を交互にする番組です。毎週日曜の夜、だいたい30分〜50分。作業のおともに、散歩のおともに。
+          「いつもの<span class="accent--zatsu">雑談</span>、まじめな<span class="accent--gijutsu">技術</span>」略していつまじラジオです。
+          福岡県で医療系のITエンジニアをしているJと上原が普段の学びを話したり、好きに雑談をするポッドキャストです。
+        </p>
+        <p class="about-lead">
+          毎週日曜日更新です。
         </p>
       </div>
 
@@ -47,14 +34,26 @@ export const About: FC<{ episodes: Episode[] }> = ({ episodes }) => {
       </div>
 
       <div class="hosts-grid">
-        {HOSTS.map((h) => (
-          <div class={`host-card host-card--${h.id}`}>
-            <div class="host-card__avatar">{h.initial}</div>
-            <div class="host-card__name">{h.name}</div>
-            <div class="host-card__role">{h.role}</div>
-            <p class="host-card__bio">{h.bio}</p>
+        <div class="host-card host-card--a">
+          <div class="host-card__name">
+            J／けちーん
+            <a class="host-card__x-link" href="https://x.com/kechiiin_" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.743l7.737-8.835L1.254 2.25H8.08l4.261 5.632 5.903-5.632Zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
           </div>
-        ))}
+          <div class="host-card__role">HOST / ENGINEER</div>
+          <p class="host-card__bio">1991/03/21生まれ、北海道出身。ソフトウェアエンジニア</p>
+        </div>
+        <div class="host-card host-card--b">
+          <div class="host-card__name">
+            上原
+            <a class="host-card__x-link" href="https://x.com/fumiya_uehara" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.743l7.737-8.835L1.254 2.25H8.08l4.261 5.632 5.903-5.632Zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+          </div>
+          <div class="host-card__role">HOST / ENGINEERING MANAGER</div>
+          <p class="host-card__bio">1992/05/15生まれ、鹿児島出身。エンジニアリングマネージャー</p>
+        </div>
       </div>
 
       <div class="section-header" style="margin-top: 40px;">

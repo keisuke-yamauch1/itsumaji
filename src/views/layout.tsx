@@ -581,19 +581,7 @@ const styles = `
   /* === 番組についてページ === */
   .about-hero {
     margin-top: 32px;
-    padding: 40px 36px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    position: relative;
-    overflow: hidden;
-  }
-  .about-hero::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--zatsu) 0%, var(--zatsu) 50%, var(--gijutsu) 50%, var(--gijutsu) 100%);
+    padding: 10px 0;
   }
   .about-heading {
     font-size: 26px;
@@ -614,7 +602,7 @@ const styles = `
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
-    margin-top: 0;
+    margin-top: 20px;
   }
   .host-card {
     background: var(--surface);
@@ -636,9 +624,24 @@ const styles = `
   .host-card--a .host-card__avatar { background: var(--zatsu-bg); color: var(--zatsu-dark); }
   .host-card--b .host-card__avatar { background: var(--gijutsu-bg); color: var(--gijutsu-dark); }
   .host-card__name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-size: 18px;
     font-weight: 700;
     margin-bottom: 4px;
+  }
+  .host-card__x-link {
+    display: inline-flex;
+    align-items: center;
+    color: var(--ink-faint);
+    transition: color 0.15s;
+  }
+  .host-card__x-link:hover { color: var(--ink); }
+  .host-card__x-link svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
   }
   .host-card__role {
     font-family: var(--font-mono);
@@ -658,7 +661,7 @@ const styles = `
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    margin-top: 0;
+    margin-top: 20px;
   }
   .stat {
     background: var(--bg-sub);
