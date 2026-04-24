@@ -595,7 +595,6 @@ const styles = `
     color: var(--ink-muted);
     font-size: 15px;
     line-height: 1.9;
-    max-width: 620px;
   }
 
   .hosts-grid {
