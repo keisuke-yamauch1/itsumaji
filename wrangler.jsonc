@@ -11,7 +11,11 @@
 		}
 	],
 	"triggers": {
-		"crons": ["0 0 * * 0"]
+		"crons": ["0 0 * * SUN", "0 1 * * SUN"]
+	},
+	"secrets": {
+		"SPOTIFY_CLIENT_ID": {},
+		"SPOTIFY_CLIENT_SECRET": {}
 	}
 	// "compatibility_flags": [
 	//   "nodejs_compat"
