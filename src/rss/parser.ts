@@ -41,12 +41,11 @@ export function parseRss(xml: string): RssEpisode[] {
     const items: RssItem[] = parsed.rss.channel.item ?? []
 
     return items.map((item: RssItem): RssEpisode => {
-        const ZATSUDAN_PREFIX = '雑談：'
-        const isZatsudan = item.title.startsWith(ZATSUDAN_PREFIX)
+        const isZatsudan = item.title.startsWith('雑談：')
         return {
             episode: {
                 guid: item.guid["#text"],
-                title: isZatsudan ? item.title.slice(ZATSUDAN_PREFIX.length) : item.title,
+                title: item.title,
                 description: item.description.split('<p>---</p>')[0].trim(),
                 published_at: toJstDate(item.pubDate),
                 duration: item["itunes:duration"],
