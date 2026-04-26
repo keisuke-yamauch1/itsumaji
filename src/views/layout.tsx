@@ -799,6 +799,7 @@ export const Layout: FC<LayoutProps> = ({ title, description, canonicalUrl, badg
           <meta name="twitter:title" content={title} />
           {description && <meta name="twitter:description" content={description} />}
           <meta name="twitter:image" content={LOGO_SRC} />
+          <link rel="icon" href={LOGO_SRC} type="image/jpeg" />
           {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
