@@ -3,6 +3,8 @@ import { syncRss } from '../rss/sync'
 import { syncSpotify } from '../spotify/sync'
 import { syncApplePodcasts } from '../apple_podcasts/sync'
 import { notifyError } from '../discord'
+import { findEpisodeByTitle } from '../repositories/episodes'
+import { insertEpisodePlatform } from '../repositories/episode_platforms'
 
 const admin = new Hono<{ Bindings: CloudflareBindings }>()
 
@@ -37,18 +39,12 @@ admin.post('/episode-platforms', async (c) => {
         return c.json({ ok: false, error: 'episode_title, platform_id, url are required' }, 400)
     }
 
-    const episode = await c.env.DB.prepare(
-        'SELECT guid FROM episodes WHERE title = ?'
-    ).bind(episode_title.normalize('NFD')).first<{ guid: string }>()
-
+    const episode = await findEpisodeByTitle(c.env.DB, episode_title)
     if (!episode) {
         return c.json({ ok: false, error: 'episode not found' }, 404)
     }
 
-    await c.env.DB.prepare(
-        'INSERT OR IGNORE INTO episode_platforms (episode_id, platform_id, url) VALUES (?, ?, ?)'
-    ).bind(episode.guid, platform_id, url).run()
-
+    await insertEpisodePlatform(c.env.DB, episode.guid, platform_id, url)
     return c.json({ ok: true })
 })
 

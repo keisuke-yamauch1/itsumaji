@@ -21,6 +21,48 @@ export async function listEpisodes(db: D1Database): Promise<Episode[]> {
     return result.results
 }
 
+export async function findEpisodeByTitle(db: D1Database, title: string): Promise<Episode | null> {
+    const result = await db.prepare("SELECT * FROM episodes WHERE title = ?")
+        .bind(title.normalize('NFD'))
+        .first<Episode>()
+    return result ?? null
+}
+
+export async function findGuidsByTitles(db: D1Database, titles: string[]): Promise<Map<string, string>> {
+    if (titles.length === 0) {
+        return new Map()
+    }
+    const placeholders = titles.map(() => "?").join(", ")
+    const result = await db.prepare(
+        `SELECT guid, title FROM episodes WHERE title IN (${placeholders})`
+    ).bind(...titles).all<{ guid: string; title: string }>()
+    return new Map(result.results.map((row) => [row.title, row.guid]))
+}
+
+export async function bulkInsertEpisodes(db: D1Database, episodes: Episode[]): Promise<void> {
+    if (episodes.length === 0) {
+        return
+    }
+    const statements = episodes.map((episode) =>
+        db.prepare(
+            `INSERT OR IGNORE INTO episodes
+             (guid, title, description, published_at, duration, thumbnail_url, category_id, season, episode_number)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        ).bind(
+            episode.guid,
+            episode.title,
+            episode.description,
+            episode.published_at,
+            episode.duration,
+            episode.thumbnail_url,
+            episode.category_id,
+            episode.season,
+            episode.episode_number,
+        )
+    )
+    await db.batch(statements)
+}
+
 export type AdjacentEpisodes = {
     prev: Episode | null
     next: Episode | null
