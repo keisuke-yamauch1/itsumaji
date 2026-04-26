@@ -20,6 +20,7 @@ admin.post('/sync/apple-podcasts', async (c) => {
     return c.json({ ok: true })
 })
 
+// amazonのapiの登録が面倒なので、泣く泣く手動で登録するエンドポイントを作る
 admin.post('/episode-platforms', async (c) => {
     const body = await c.req.json<{ episode_title: string; platform_id: number; url: string }>()
     const { episode_title, platform_id, url } = body
