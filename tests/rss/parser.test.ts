@@ -24,12 +24,14 @@ describe('parseRss', () => {
       {
         episode: {
           guid: "01kpf8d7sgm2q6byyxf2q2r6ap",
-          title: "最近ハマってること #11",
+          title: "雑談：最近ハマってること #11",
           description: "説明テキスト",
           published_at: "2026-04-19",
           duration: "00:53:51",
           thumbnail_url: "https://example.com/image.jpg",
           category_id: 1,
+          season: null,
+          episode_number: 0,
         },
         url: "https://listen.style/p/itsumaji-radio/tstkdxyx",
       }
@@ -85,7 +87,7 @@ describe('parseRss', () => {
 </rss>`
 
     const results = parseRss(xml)
-    expect(results[0].episode.title).toBe('近況報告')
+    expect(results[0].episode.title).toBe('雑談：近況報告')
     expect(results[0].episode.category_id).toBe(1)
     expect(results[1].episode.title).toBe('Hono 入門')
     expect(results[1].episode.category_id).toBe(2)

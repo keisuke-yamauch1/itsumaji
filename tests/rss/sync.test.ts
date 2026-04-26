@@ -73,7 +73,7 @@ describe('syncRss', () => {
       .prepare('SELECT guid, title, category_id FROM episodes ORDER BY guid')
       .all<{ guid: string; title: string; category_id: number }>()
     expect(episodes.results).toEqual([
-      { guid: 'guid-1', title: '近況報告', category_id: CATEGORY_IDS.ZATSUDAN },
+      { guid: 'guid-1', title: '雑談：近況報告', category_id: CATEGORY_IDS.ZATSUDAN },
       { guid: 'guid-2', title: 'Hono 入門', category_id: CATEGORY_IDS.TECH },
     ])
 
