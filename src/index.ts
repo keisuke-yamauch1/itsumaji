@@ -3,6 +3,7 @@ import pages from './routes/pages'
 import admin from './routes/admin'
 import {syncRss} from "./rss/sync";
 import {syncSpotify} from "./spotify/sync";
+import {syncApplePodcasts} from "./apple_podcasts/sync";
 
 const app = new Hono<{ Bindings: CloudflareBindings}>()
 
@@ -16,6 +17,7 @@ export default {
       ctx.waitUntil(syncRss(env))
     } else if (event.cron === "0 1 * * SUN") {
       ctx.waitUntil(syncSpotify(env))
+      ctx.waitUntil(syncApplePodcasts(env))
     }
   }
 }

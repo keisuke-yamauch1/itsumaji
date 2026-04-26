@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import { syncRss } from '../rss/sync'
 import { syncSpotify } from '../spotify/sync'
+import { syncApplePodcasts } from '../apple_podcasts/sync'
 
 const admin = new Hono<{ Bindings: CloudflareBindings }>()
 
@@ -11,6 +12,11 @@ admin.post('/sync/rss', async (c) => {
 
 admin.post('/sync/spotify', async (c) => {
     await syncSpotify(c.env)
+    return c.json({ ok: true })
+})
+
+admin.post('/sync/apple-podcasts', async (c) => {
+    await syncApplePodcasts(c.env)
     return c.json({ ok: true })
 })
 
