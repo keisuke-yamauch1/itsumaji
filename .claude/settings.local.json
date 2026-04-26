@@ -2,7 +2,13 @@
   "permissions": {
     "allow": [
       "Bash(gh issue:*)",
-      "Bash(gh api:*)"
+      "Bash(gh api:*)",
+      "WebFetch(domain:rss.listen.style)",
+      "Bash(curl -s http://localhost:8787/debug/spotify)",
+      "WebFetch(domain:listen.style)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:github.com)",
+      "Skill(update-config)"
     ]
   }
 }
