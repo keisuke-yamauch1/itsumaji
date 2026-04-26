@@ -10,6 +10,6 @@ export async function fetchSpotifyEpisodes(token: string): Promise<SpotifyEpisod
         },
     })
 
-    const data = await response.json() as { items: SpotifyEpisode[] };
+    const data = await response.json() as { items: SpotifyEpisode[] }
     return data.items;
 }
