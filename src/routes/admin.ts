@@ -20,4 +20,27 @@ admin.post('/sync/apple-podcasts', async (c) => {
     return c.json({ ok: true })
 })
 
+admin.post('/episode-platforms', async (c) => {
+    const body = await c.req.json<{ episode_title: string; platform_id: number; url: string }>()
+    const { episode_title, platform_id, url } = body
+
+    if (!episode_title || !platform_id || !url) {
+        return c.json({ ok: false, error: 'episode_title, platform_id, url are required' }, 400)
+    }
+
+    const episode = await c.env.DB.prepare(
+        'SELECT guid FROM episodes WHERE title = ?'
+    ).bind(episode_title.normalize('NFD')).first<{ guid: string }>()
+
+    if (!episode) {
+        return c.json({ ok: false, error: 'episode not found' }, 404)
+    }
+
+    await c.env.DB.prepare(
+        'INSERT OR IGNORE INTO episode_platforms (episode_id, platform_id, url) VALUES (?, ?, ?)'
+    ).bind(episode.guid, platform_id, url).run()
+
+    return c.json({ ok: true })
+})
+
 export default admin
