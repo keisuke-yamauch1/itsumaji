@@ -15,9 +15,11 @@ function buildBadge(episodes: Episode[]): string | undefined {
   return `EP.${formatEpisodeNumber(min)} – EP.${formatEpisodeNumber(max)}`
 }
 
-export const Home: FC<{ episodes: Episode[] }> = ({ episodes }) => (
+export const Home: FC<{ episodes: Episode[]; canonicalUrl?: string }> = ({ episodes, canonicalUrl }) => (
   <Layout
     title="いつまじラジオ｜いつもの雑談、まじめな技術"
+    description="福岡県で医療系ITエンジニアをしているJと上原が普段の学びを話したり、好きに雑談をするポッドキャスト。毎週日曜日更新。"
+    canonicalUrl={canonicalUrl}
     badge={buildBadge(episodes)}
   >
     <div class="list-toolbar">

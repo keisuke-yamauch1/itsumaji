@@ -9,6 +9,11 @@ import { formatDate, getCategoryInfo, parseTitle } from '../utils/episode_title'
 type Props = {
   data: PlatformEpisode
   neighbors: AdjacentEpisodes
+  canonicalUrl?: string
+}
+
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().slice(0, 150)
 }
 
 function toListenEmbedUrl(listenUrl: string): string {
@@ -79,15 +84,18 @@ const NavItem: FC<{ ep: Episode | null; direction: 'prev' | 'next' }> = ({ ep, d
   )
 }
 
-export const EpisodeDetail: FC<Props> = ({ data, neighbors }) => {
+export const EpisodeDetail: FC<Props> = ({ data, neighbors, canonicalUrl }) => {
   const { episode, platforms } = data
   const listen = platforms.find((p) => p.name === 'LISTEN')
   const { cleanTitle, number } = parseTitle(episode.title)
   const { category, categoryLabel } = getCategoryInfo(episode.category_id)
+  const description = episode.description ? stripHtml(episode.description) : undefined
 
   return (
     <Layout
       title={`${cleanTitle}${number !== null ? ` #${number}` : ''} — いつまじラジオ`}
+      description={description}
+      canonicalUrl={canonicalUrl}
       variant="detail"
       bodyThemeClass={`theme-${category}`}
     >

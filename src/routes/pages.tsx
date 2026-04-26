@@ -8,12 +8,12 @@ const pages = new Hono<{ Bindings: CloudflareBindings }>()
 
 pages.get('/', async (c) => {
   const episodes = await listEpisodes(c.env.DB)
-  return c.html(<Home episodes={episodes} />)
+  return c.html(<Home episodes={episodes} canonicalUrl={c.req.url} />)
 })
 
 pages.get('/about', async (c) => {
   const episodes = await listEpisodes(c.env.DB)
-  return c.html(<About episodes={episodes} />)
+  return c.html(<About episodes={episodes} canonicalUrl={c.req.url} />)
 })
 
 pages.get('/episodes/:guid', async (c) => {
@@ -25,7 +25,7 @@ pages.get('/episodes/:guid', async (c) => {
   if (episode === null) {
     return c.notFound()
   }
-  return c.html(<EpisodeDetail data={episode} neighbors={neighbors} />)
+  return c.html(<EpisodeDetail data={episode} neighbors={neighbors} canonicalUrl={c.req.url} />)
 })
 
 export default pages

@@ -3,13 +3,15 @@ import type { Episode } from '../models/db/episode'
 import { Layout } from './layout'
 import { CATEGORY_IDS } from '../constants/categories'
 
-export const About: FC<{ episodes: Episode[] }> = ({ episodes }) => {
+export const About: FC<{ episodes: Episode[]; canonicalUrl?: string }> = ({ episodes, canonicalUrl }) => {
   const zCount = episodes.filter((e) => e.category_id === CATEGORY_IDS.ZATSUDAN).length
   const gCount = episodes.filter((e) => e.category_id === CATEGORY_IDS.TECH).length
 
   return (
     <Layout
       title="番組について — いつまじラジオ"
+      description="福岡県で医療系ITエンジニアをしているJと上原によるポッドキャスト「いつまじラジオ」の番組情報。パーソナリティ紹介や配信実績をご紹介します。"
+      canonicalUrl={canonicalUrl}
       variant="about"
     >
       <div class="about-hero">

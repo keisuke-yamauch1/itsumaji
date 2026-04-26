@@ -721,6 +721,8 @@ const LOGO_SRC = 'https://images.kechiiiiin.com/icon/%E3%81%84%E3%81%A4%E3%81%BE
 
 type LayoutProps = {
   title: string
+  description?: string
+  canonicalUrl?: string
   badge?: string
   variant?: 'home' | 'detail' | 'about'
   bodyThemeClass?: string
@@ -775,7 +777,7 @@ const DetailTopNav: FC = () => (
   </nav>
 )
 
-export const Layout: FC<LayoutProps> = ({ title, badge, variant = 'home', bodyThemeClass, children }) => {
+export const Layout: FC<LayoutProps> = ({ title, description, canonicalUrl, badge, variant = 'home', bodyThemeClass, children }) => {
   const activeNav = variant === 'about' ? 'about' : 'episodes'
   return (
     <>
@@ -785,6 +787,19 @@ export const Layout: FC<LayoutProps> = ({ title, badge, variant = 'home', bodyTh
           <meta charset="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           <title>{title}</title>
+          {description && <meta name="description" content={description} />}
+          <meta property="og:title" content={title} />
+          {description && <meta property="og:description" content={description} />}
+          <meta property="og:type" content={variant === 'detail' ? 'article' : 'website'} />
+          {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+          <meta property="og:image" content={LOGO_SRC} />
+          <meta property="og:site_name" content="いつまじラジオ" />
+          <meta property="og:locale" content="ja_JP" />
+          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:title" content={title} />
+          {description && <meta name="twitter:description" content={description} />}
+          <meta name="twitter:image" content={LOGO_SRC} />
+          {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
           <link
