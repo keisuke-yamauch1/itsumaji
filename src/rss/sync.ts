@@ -4,6 +4,11 @@ import {PLATFORM_IDS} from "../constants/platforms";
 export
 async function syncRss(env: CloudflareBindings) {
     const response = await fetch("https://rss.listen.style/p/itsumaji-radio/rss")
+
+    if (!response.ok) {
+        throw new Error(`RSS fetch failed: ${response.status} ${response.statusText}`)
+    }
+
     const xml = await response.text()
     const rssEpisodes = parseRss(xml)
 

@@ -10,6 +10,10 @@ export async function fetchSpotifyEpisodes(token: string): Promise<SpotifyEpisod
         },
     })
 
+    if (!response.ok) {
+        throw new Error(`Spotify episodes fetch failed: ${response.status} ${response.statusText}`)
+    }
+
     const data = await response.json() as { items: SpotifyEpisode[] }
     return data.items;
 }

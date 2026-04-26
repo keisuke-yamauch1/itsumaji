@@ -9,6 +9,10 @@ export async function getSpotifyToken(env: CloudflareBindings): Promise<string> 
         body: "grant_type=client_credentials"
     });
 
+    if (!response.ok) {
+        throw new Error(`Spotify token fetch failed: ${response.status} ${response.statusText}`)
+    }
+
     const data = await response.json() as { access_token: string };
     return data.access_token;
 }

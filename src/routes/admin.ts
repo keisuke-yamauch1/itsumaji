@@ -2,8 +2,16 @@ import { Hono } from 'hono'
 import { syncRss } from '../rss/sync'
 import { syncSpotify } from '../spotify/sync'
 import { syncApplePodcasts } from '../apple_podcasts/sync'
+import { notifyError } from '../discord'
 
 const admin = new Hono<{ Bindings: CloudflareBindings }>()
+
+admin.onError((err, c) => {
+    c.executionCtx.waitUntil(
+        notifyError(c.env.DISCORD_WEBHOOK_URL, `${c.req.method} ${c.req.path}`, err)
+    )
+    return c.json({ ok: false, error: 'internal error' }, 500)
+})
 
 admin.post('/sync/rss', async (c) => {
     await syncRss(c.env)
