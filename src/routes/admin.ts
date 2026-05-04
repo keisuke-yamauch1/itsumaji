@@ -8,6 +8,15 @@ import { insertEpisodePlatform } from '../repositories/episode_platforms'
 
 const admin = new Hono<{ Bindings: CloudflareBindings }>()
 
+admin.use('/*', async (c, next) => {
+    const authHeader = c.req.header('Authorization')
+    const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
+    if (!token || token !== c.env.ADMIN_TOKEN) {
+        return c.json({ ok: false, error: 'unauthorized' }, 401)
+    }
+    await next()
+})
+
 admin.onError((err, c) => {
     c.executionCtx.waitUntil(
         notifyError(c.env.DISCORD_WEBHOOK_URL, `${c.req.method} ${c.req.path}`, err)
