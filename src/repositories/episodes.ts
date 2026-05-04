@@ -28,6 +28,13 @@ export async function findEpisodeByTitle(db: D1Database, title: string): Promise
     return result ?? null
 }
 
+export async function findEpisodeByGuid(db: D1Database, guid: string): Promise<Episode | null> {
+    const result = await db.prepare("SELECT * FROM episodes WHERE guid = ?")
+        .bind(guid)
+        .first<Episode>()
+    return result ?? null
+}
+
 export async function findGuidsByTitles(db: D1Database, titles: string[]): Promise<Map<string, string>> {
     if (titles.length === 0) {
         return new Map()

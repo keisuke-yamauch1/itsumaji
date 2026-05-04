@@ -32,16 +32,16 @@ function postEpisodePlatforms(body: unknown) {
 
 describe('POST /episode-platforms', () => {
   it('必須フィールドが欠けると 400 を返す', async () => {
-    const res = await postEpisodePlatforms({ episode_title: 'タイトル', platform_id: PLATFORM_IDS.AMAZON_MUSIC })
+    const res = await postEpisodePlatforms({ guid: 'guid-1', platform_id: PLATFORM_IDS.AMAZON_MUSIC })
 
     expect(res.status).toBe(400)
     const body = await res.json<{ ok: boolean; error: string }>()
     expect(body.ok).toBe(false)
   })
 
-  it('該当タイトルのエピソードが無いと 404 を返す', async () => {
+  it('該当 guid のエピソードが無いと 404 を返す', async () => {
     const res = await postEpisodePlatforms({
-      episode_title: '存在しないタイトル',
+      guid: 'non-existent-guid',
       platform_id: PLATFORM_IDS.AMAZON_MUSIC,
       url: 'https://music.amazon.co.jp/podcasts/xxx',
     })
@@ -51,12 +51,11 @@ describe('POST /episode-platforms', () => {
     expect(body.ok).toBe(false)
   })
 
-  it('NFC で送られたタイトルでも NFD で保存された行にマッチして 200 を返す', async () => {
-    const nfdTitle = 'バイト先での話'.normalize('NFD')
-    await insertEpisode('guid-1', nfdTitle)
+  it('指定した guid に対して episode_platforms が登録される', async () => {
+    await insertEpisode('guid-1', 'タイトル')
 
     const res = await postEpisodePlatforms({
-      episode_title: 'バイト先での話'.normalize('NFC'),
+      guid: 'guid-1',
       platform_id: PLATFORM_IDS.AMAZON_MUSIC,
       url: 'https://music.amazon.co.jp/podcasts/xxx',
     })
@@ -76,10 +75,10 @@ describe('POST /episode-platforms', () => {
   })
 
   it('同じ (episode_id, platform_id) で複数回呼んでも重複しない', async () => {
-    await insertEpisode('guid-1', 'タイトル'.normalize('NFD'))
+    await insertEpisode('guid-1', 'タイトル')
 
     const body = {
-      episode_title: 'タイトル',
+      guid: 'guid-1',
       platform_id: PLATFORM_IDS.AMAZON_MUSIC,
       url: 'https://music.amazon.co.jp/podcasts/xxx',
     }
