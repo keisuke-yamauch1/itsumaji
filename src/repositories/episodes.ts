@@ -46,13 +46,30 @@ export async function findGuidsByTitles(db: D1Database, titles: string[]): Promi
     return new Map(result.results.map((row) => [row.title, row.guid]))
 }
 
+export async function insertEpisode(db: D1Database, episode: Episode): Promise<void> {
+    await db.prepare(
+        `INSERT INTO episodes (guid, title, description, published_at, duration, thumbnail_url, category_id, season, episode_number)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    ).bind(
+        episode.guid,
+        episode.title,
+        episode.description,
+        episode.published_at,
+        episode.duration,
+        episode.thumbnail_url,
+        episode.category_id,
+        episode.season,
+        episode.episode_number,
+    ).run()
+}
+
 export async function bulkInsertEpisodes(db: D1Database, episodes: Episode[]): Promise<void> {
     if (episodes.length === 0) {
         return
     }
     const statements = episodes.map((episode) =>
         db.prepare(
-            `INSERT OR IGNORE INTO episodes
+            `INSERT OR REPLACE INTO episodes
              (guid, title, description, published_at, duration, thumbnail_url, category_id, season, episode_number)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
         ).bind(
