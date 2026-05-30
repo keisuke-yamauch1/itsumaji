@@ -4,9 +4,11 @@ import { syncSpotify } from '../spotify/sync'
 import { syncApplePodcasts } from '../apple_podcasts/sync'
 import { notifyError } from '../discord'
 import { findEpisodeByGuid, insertEpisode, listEpisodes } from '../repositories/episodes'
-import { insertEpisodePlatform } from '../repositories/episode_platforms'
+import { findEpisodePlatformUrl, insertEpisodePlatform, listRegisteredPlatformsByGuid, upsertEpisodePlatform } from '../repositories/episode_platforms'
 import { Dashboard } from '../views/admin/dashboard'
 import { EpisodeForm } from '../views/admin/episode_form'
+import { PlatformUrlForm } from '../views/admin/platform_url_form'
+import { PLATFORM_INFO } from '../constants/platforms'
 
 const admin = new Hono<{ Bindings: CloudflareBindings }>()
 
@@ -35,10 +37,13 @@ admin.onError((err, c) => {
 
 // ダッシュボード
 admin.get('/', async (c) => {
-    const episodes = await listEpisodes(c.env.DB)
+    const [episodes, platformsByGuid] = await Promise.all([
+        listEpisodes(c.env.DB),
+        listRegisteredPlatformsByGuid(c.env.DB),
+    ])
     const message = c.req.query('message')
     const error = c.req.query('error')
-    return c.html(<Dashboard episodes={episodes} message={message} error={error} />)
+    return c.html(<Dashboard episodes={episodes} platformsByGuid={platformsByGuid} message={message} error={error} />)
 })
 
 // エピソード事前登録フォーム
@@ -84,6 +89,36 @@ admin.post('/episodes', async (c) => {
     })
 
     return c.redirect(`/admin?message=EP${episodeNumber}「${title}」を登録しました`)
+})
+
+// プラットフォーム URL 登録フォーム
+admin.get('/episodes/:guid/platforms/:platform_id', async (c) => {
+    const guid = c.req.param('guid')
+    const platformId = Number(c.req.param('platform_id'))
+    if (!PLATFORM_INFO[platformId]) return c.notFound()
+    const episode = await findEpisodeByGuid(c.env.DB, guid)
+    if (!episode) return c.notFound()
+    const currentUrl = await findEpisodePlatformUrl(c.env.DB, guid, platformId)
+    return c.html(<PlatformUrlForm episode={episode} platformId={platformId} currentUrl={currentUrl} />)
+})
+
+admin.post('/episodes/:guid/platforms/:platform_id', async (c) => {
+    const guid = c.req.param('guid')
+    const platformId = Number(c.req.param('platform_id'))
+    if (!PLATFORM_INFO[platformId]) return c.notFound()
+    const episode = await findEpisodeByGuid(c.env.DB, guid)
+    if (!episode) return c.notFound()
+
+    const body = await c.req.parseBody()
+    const url = String(body.url ?? '').trim()
+    if (!url) {
+        const currentUrl = await findEpisodePlatformUrl(c.env.DB, guid, platformId)
+        return c.html(<PlatformUrlForm episode={episode} platformId={platformId} currentUrl={currentUrl} error="URLを入力してください" />, 400)
+    }
+
+    await upsertEpisodePlatform(c.env.DB, guid, platformId, url)
+    const info = PLATFORM_INFO[platformId]
+    return c.redirect(`/admin?message=EP${episode.episode_number}「${episode.title}」の${info.name} URLを登録しました`)
 })
 
 admin.post('/sync/rss', async (c) => {
